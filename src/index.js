@@ -1,8 +1,12 @@
 require("dotenv").config();
-const router = require("./routers");
-const errorHandler = require("./middlewares/errorMiddleware");
+const helmet = require("helmet");
 const express = require("express");
 const app = express();
+
+const router = require("./routers/index");
+const errorHandler = require("./middlewares/errorMiddleware");
+
+app.use(helmet());
 
 app.use(express.json());
 

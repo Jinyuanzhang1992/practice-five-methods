@@ -1,6 +1,6 @@
-const listsMock = require("../mock-data/lists.json");
 const { validationResult } = require("express-validator");
 const createNewErrors = require("../utils/createNewErrors");
+const { getListById } = require("../models/list");
 
 const getList = (req, res, next) => {
   const { id } = req.params;
@@ -17,15 +17,15 @@ const getList = (req, res, next) => {
     return next(err);
   }
 
-  const lists = listsMock.find((item) => item.id === id);
-  if (!lists) {
+  const list = getListById(id);
+  if (!list) {
     const err = createNewErrors("List not found", 404, "notFound");
     return next(err);
   }
 
   res.status(200).json({
     message: "Success",
-    data: lists,
+    data: list,
     status: 200,
   });
 };

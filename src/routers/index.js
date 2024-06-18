@@ -6,10 +6,10 @@ const {
   postListsValidationRules,
 } = require("../utils/validators");
 const parseId = require("../middlewares/parseIdMiddleware");
-const getLists = require("../controllers/getLists");
-const postLists = require("../controllers/postLists");
-const updateLists = require("../controllers/updateLists");
-const deleteLists = require("../controllers/deleteLists");
+const getLists = require("../controllers/getList");
+const postLists = require("../controllers/postList");
+const updateLists = require("../controllers/updateList");
+const deleteLists = require("../controllers/deleteList");
 
 router.get(
   "/get-lists/:id",

@@ -4,6 +4,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-validator": "^7.1.0",
+    "helmet": "^7.1.0",
     "winston": "^3.13.0"
   },
   "name": "node4",
