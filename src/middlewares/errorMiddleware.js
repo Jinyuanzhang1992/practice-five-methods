@@ -1,50 +1,54 @@
-const logger = require("../utils/logger");
+const createLogger = require("../utils/logger");
+const logger = createLogger(__filename);
 
 const errorHandler = (err, req, res, next) => {
-  let status; // = err.status || 500;
-  let message; // = err.message || "Internal Server Error";
-  let stack; // = err.stack || "No stack trace available";
-  let data; //  = err.data || "No data available";
+  const defaultError = {
+    status: 500,
+    message: "Internal Server Error",
+    stack: "No stack trace available",
+    data: "No data available",
+  };
 
-  if (err.type === "validation") {
-    status = err.status || 500;
-    message = err.message || "Internal Server Error";
-    data = err.data || "No data available";
-    stack = err.stack || "No stack trace available";
+  let { status, message, stack, data } = defaultError;
+
+  if (err.type) {
+    status = err.status || defaultError.status;
+    message = err.message || defaultError.message;
+    stack = err.stack || defaultError.stack;
+
+    if (err.type === "validation") {
+      data = err.data || "No data available";
+    }
+
+    if (err.type === "axios") {
+      status = err.response?.status || defaultError.status;
+      message = err.response?.statusText || defaultError.message;
+    }
+
     res.status(status).json({
       message,
       status,
-      data,
-      stack,
+      ...(err.type === "validation" && { data }),
     });
-    return;
-  }
 
-  if (err.type === "notFound") {
-    status = err.status || 500;
-    message = err.message || "Internal Server Error";
-    stack = err.stack || "No stack trace available";
-    res.status(status).json({
-      message,
+    logger.error(`Error fetching news: ${err.message}`, {
       status,
-      stack,
+      stack: process.env.NODE_ENV === "production" ? undefined : stack,
+      type: err.type,
+      ...(err.type === "validation" && { data }),
     });
-    return;
-  }
-
-  if (err.type === "axios") {
-    status = err.response.status || 500;
-    message = err.response.statusText || "Internal Server Error";
-    stack = err.stack || "No stack trace available";
-    res.status(status).json({
-      message,
-      status,
-      stack,
+  } else {
+    res.status(defaultError.status).json({
+      message: defaultError.message,
+      status: defaultError.status,
     });
-    return;
-  }
 
-  logger.error(`Error fetching news: ${err.message}`, { err, status, stack }); // 记录错误信息以及任何有关的数据
+    logger.error(`Error fetching news: ${defaultError.message}`, {
+      status: defaultError.status,
+      stack:
+        process.env.NODE_ENV === "production" ? undefined : defaultError.stack,
+    });
+  }
 };
 
 module.exports = errorHandler;

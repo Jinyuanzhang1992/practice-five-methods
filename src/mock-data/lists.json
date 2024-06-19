@@ -1,12 +1,12 @@
 [
   {
     "id": 1,
-    "name": "Jinyuan Zhang",
-    "completed": true
+    "name": "Bob",
+    "completed": false
   },
   {
-    "id": 4,
-    "name": "Bob",
+    "id": 2,
+    "name": "Daniel",
     "completed": true
   }
 ]

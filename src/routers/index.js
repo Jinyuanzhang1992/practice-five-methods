@@ -6,27 +6,32 @@ const {
   postListsValidationRules,
 } = require("../utils/validators");
 const parseId = require("../middlewares/parseIdMiddleware");
-const getLists = require("../controllers/getList");
-const postLists = require("../controllers/postList");
-const updateLists = require("../controllers/updateList");
-const deleteLists = require("../controllers/deleteList");
+const validation = require("../middlewares/validationMiddleware");
+const {
+  getList,
+  deleteList,
+  postList,
+  updateList,
+} = require("../controllers/listController");
 
 router.get(
   "/get-lists/:id",
   parseId,
   getAndDeleteListValidationRules,
-  getLists
+  validation,
+  getList
 );
 
-router.post("/post-lists", postListsValidationRules, postLists);
+router.post("/post-lists", postListsValidationRules, validation, postList);
 
-router.put("/update-lists", updateListsValidationRules, updateLists);
+router.put("/update-lists", updateListsValidationRules, validation, updateList);
 
 router.delete(
   "/delete-lists/:id",
   parseId,
   getAndDeleteListValidationRules,
-  deleteLists
+  validation,
+  deleteList
 );
 
 module.exports = router;
